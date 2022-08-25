@@ -1,0 +1,291 @@
+<!doctype html>
+<head>
+	<title>Timebus</title>
+	<script src="/static/base.js"></script>
+	<link href="/static/base.css" rel="stylesheet" type="text/css">
+	<link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css" rel="stylesheet">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js"></script>
+  <script src="jquery-3.6.0.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+	<h1>Hello!</h1>
+	<p>
+		The first station is:
+		<cb>{{ station }}</cb>! <!--Gets the random number from the python file-->
+	</p>
+  <div id="map"></div>
+  <script>
+    
+    mapboxgl.accessToken = 'pk.eyJ1IjoicnViaWM0IiwiYSI6ImNrY3Vla3R1ZjF0YnYyeXQ2c243eWVpeHEifQ.Hgj0BjhuuOAowR_pE97V_Q';
+
+    const geojson = {
+      'type': 'FeatureCollection',
+      'features': [
+        {
+          'type': 'Feature',
+          'geometry': {
+            'type': 'Point',
+            'coordinates': [21.22263, 45.75634]
+          },
+          'properties': {
+            'title': 'Mapbox',
+            'description': 'Piata 700'
+          }
+        },
+        {
+          'type': 'Feature',
+          'geometry': {
+            'type': 'Point',
+            'coordinates': [21.217045, 45.75659]
+          },
+          'properties': {
+            'title': 'Mapbox',
+            'description': 'Circumvalatiunii'
+          }
+        },
+        {
+          'type': 'Feature',
+          'geometry': {
+            'type': 'Point',
+            'coordinates': [21.213752, 45.756908]
+          },
+          'properties': {
+            'title': 'Mapbox',
+            'description': 'Mendeleev'
+          }
+        },
+        {
+          'type': 'Feature',
+          'geometry': {
+            'type': 'Point',
+            'coordinates': [21.209051, 45.756685]
+          },
+          'properties': {
+            'title': 'Mapbox',
+            'description': 'Hasdeu'
+          }
+        },
+        {
+          'type': 'Feature',
+          'geometry': {
+            'type': 'Point',
+            'coordinates': [21.204381, 45.757615]
+          },
+          'properties': {
+            'title': 'Mapbox',
+            'description': 'Uta'
+          }
+        },
+        {
+          'type': 'Feature',
+          'geometry': {
+            'type': 'Point',
+            'coordinates': [21.201038, 45.757519]
+          },
+          'properties': {
+            'title': 'Mapbox',
+            'description': 'Lapusneanu'
+          }
+        },
+        {
+          'type': 'Feature',
+          'geometry': {
+            'type': 'Point',
+            'coordinates': [21.194473, 45.756774]
+          },
+          'properties': {
+            'title': 'Mapbox',
+            'description': 'Alexandru Lapusneanu'
+          }
+        },
+        {
+          'type': 'Feature',
+          'geometry': {
+            'type': 'Point',
+            'coordinates': [21.194473, 45.756774]
+          },
+          'properties': {
+            'title': 'Mapbox',
+            'description': 'Grigore Alexandrescu'
+          }
+        },
+        {
+          'type': 'Feature',
+          'geometry': {
+            'type': 'Point',
+            'coordinates': [21.191809, 45.755369]
+          },
+          'properties': {
+            'title': 'Mapbox',
+            'description': 'Madona'
+          }
+        },
+        {
+          'type': 'Feature',
+          'geometry': {
+            'type': 'Point',
+            'coordinates': [21.189948, 45.752393]
+          },
+          'properties': {
+            'title': 'Mapbox',
+            'description': 'Taborului'
+          }
+        },
+        {
+          'type': 'Feature',
+          'geometry': {
+            'type': 'Point',
+            'coordinates': [21.189834, 45.751238]
+          },
+          'properties': {
+            'title': 'Mapbox',
+            'description': 'Razboieni'
+          }
+        },
+        {
+          'type': 'Feature',
+          'geometry': {
+            'type': 'Point',
+            'coordinates': [21.189494, 45.749006]
+          },
+          'properties': {
+            'title': 'Mapbox',
+            'description': 'Ronat'
+          }
+        },
+        {
+          'type': 'Feature',
+          'geometry': {
+            'type': 'Point',
+            'coordinates': [21.186326, 45.751884]
+          },
+          'properties': {
+            'title': 'Mapbox',
+            'description': 'Ciresului'
+          }
+        },
+        {
+          'type': 'Feature',
+          'geometry': {
+            'type': 'Point',
+            'coordinates': [21.183604, 45.751862]
+          },
+          'properties': {
+            'title': 'Mapbox',
+            'description': 'C.A. Rosseti'
+          }
+        },
+        {
+          'type': 'Feature',
+          'geometry': {
+            'type': 'Point',
+            'coordinates': [21.186072, 45.755182]
+          },
+          'properties': {
+            'title': 'Mapbox',
+            'description': 'Banul Severinului'
+          }
+        },
+        {
+          'type': 'Feature',
+          'geometry': {
+            'type': 'Point',
+            'coordinates': [21.185649, 45.757266]
+          },
+          'properties': {
+            'title': 'Mapbox',
+            'description': 'Grigore Ureche'
+          }
+        },
+        {
+          'type': 'Feature',
+          'geometry': {
+            'type': 'Point',
+            'coordinates': [21.185072, 45.76012]
+          },
+          'properties': {
+            'title': 'Mapbox',
+            'description': 'Rarau'
+          }
+        },
+        {
+          'type': 'Feature',
+          'geometry': {
+            'type': 'Point',
+            'coordinates': [21.187671, 45.76025]
+          },
+          'properties': {
+            'title': 'Mapbox',
+            'description': 'Ciocarliei'
+          }
+        },
+        {
+          'type': 'Feature',
+          'geometry': {
+            'type': 'Point',
+            'coordinates': [21.187547, 45.754888]
+          },
+          'properties': {
+            'title': 'Mapbox',
+            'description': 'I.M.L.'
+          }
+        }
+      ]
+    };
+
+    const map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/light-v10',
+      center: [21.22263, 45.75634],
+      zoom: 15
+    });
+
+    function updateMap() {
+      
+      const boxes = document.querySelectorAll('.marker');
+
+      boxes.forEach(box => {
+        box.remove();
+      });
+      // add markers to map
+      let index = 0;
+      fetch('/api')
+      .then(function (response) {
+            return response.json();
+      }).then(function (text) {
+          console.log('GET response text:');
+          console.log(text);
+  
+          for (const feature of geojson.features) {
+            // create a HTML element for each feature
+            const el = document.createElement('div');
+            el.className = 'marker';
+            
+            el.textContent = `${text[index][1]}: ${text[index][0]} min.`;
+            index++;
+            // make a marker for each feature and add it to the map
+            new mapboxgl.Marker(el)
+              .setLngLat(feature.geometry.coordinates)
+              .setPopup(
+                new mapboxgl.Popup({ offset: 25 }) // add popups
+                  .setHTML(
+                    `<h3>${feature.properties.title}</h3><p>${feature.properties.description}</p>`
+                  )
+              )
+              .addTo(map);
+          }
+        
+      });
+      
+    }
+    updateMap();
+    setInterval(updateMap, 20000)
+
+    
+
+
+  
+  </script>
+</body>
