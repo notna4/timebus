@@ -338,29 +338,84 @@ const map = new mapboxgl.Map({
 });
 
 function calculateRoute(geomFrom, geomTo) {
-
   var lngFrom = geomFrom[0]
   var latFrom = geomFrom[1]
 
   var lngTo = geomTo[0]  
   var latTo = geomTo[1]
+  fetch('https://api.mapbox.com/directions/v5/mapbox/driving/' + lngFrom + '%2C' + latFrom + '%3B' + lngTo + '%2C' + latTo + '?alternatives=true&geometries=geojson&language=en&overview=simplified&steps=true&access_token=pk.eyJ1IjoicnViaWM0IiwiYSI6ImNrY3Vla3R1ZjF0YnYyeXQ2c243eWVpeHEifQ.Hgj0BjhuuOAowR_pE97V_Q')
+  .then(function (response) {
+        return response.json();
+  }).then(function (text) {
+      console.log(text.routes[0].geometry.coordinates);
 
-      $.get('https://api.mapbox.com/directions/v5/mapbox/driving/21.19449716216147%2C45.75670804646262%3B21.2026916969902%2C45.7574848591222?alternatives=true&geometries=polyline&language=en&overview=simplified&steps=true&access_token=pk.eyJ1IjoicnViaWM0IiwiYSI6ImNrY3Vla3R1ZjF0YnYyeXQ2c243eWVpeHEifQ.Hgj0BjhuuOAowR_pE97V_Q', 
-    function( data ) {
-      var coords = polyline.decode(data.routes[0].geometry);
+      let position = [];
+      let positions = [];
+
+      for(let i = 0; i < text.routes[0].geometry.coordinates.length; i++) {
+        position.push(text.routes[0].geometry.coordinates[i][0]);
+        position.push(text.routes[0].geometry.coordinates[i][1]);
+        positions.push(position);
+        position = [];
+      }
+      console.log(positions);
+      let linestring = turf.lineString(positions);
   
-      var line = L.polyline(coords).addTo(map);
+      map.addLayer({
+          'id': 'route',
+          'type': 'line',
+          'source': {
+            'type':'geojson',
+            'data': linestring
+          },
+          'layout': {
+              'line-join': 'round',
+              'line-cap': 'round'
+          },
+          'paint': {
+              'line-color': '#888',
+              'line-width': 8
+          }
+      });
 
-  });  
-};
+    
+  })
+
+  
+}
+
+map.on('load', () => {
+  map.addSource('route', {
+      'type': 'geojson',
+      'data': {
+          'type': 'Feature',
+          'properties': {},
+          'geometry': {
+              'type': 'LineString',
+              'coordinates': [
+                  [-122.483696, 37.833818],
+                  [-122.483482, 37.833174]
+              ]
+          }
+      }
+  });
+  map.addLayer({
+      'id': 'route',
+      'type': 'line',
+      'source': 'route',
+      'layout': {
+          'line-join': 'round',
+          'line-cap': 'round'
+      },
+      'paint': {
+          'line-color': '#888',
+          'line-width': 8
+      }
+  });
+});
+
 let prevPos;
 function updateMap() {
-  
-  const boxes = document.querySelectorAll('.marker');
-
-  boxes.forEach(box => {
-    box.remove();
-  });
   
   // add markers to map
   let index = 0;
@@ -385,20 +440,49 @@ function updateMap() {
       else {
         el.className = 'marker';
       }
-      
-      if(index == 0) {
-        let prev = text[index][0];
-        prevPos = feature.geometry.coordinates;
+
+      el.id = "none";
+
+      if(text[index][0] == 0) {
+        //calculateRoute(prevPos, feature.geometry.coordinates)
+        console.log(prevPos);
         console.log(feature.geometry.coordinates);
+        el.id = 'markerBetween';
+
+        let up = document.createElement('div');
+        up.id = 'updates';
+        up.textContent = "Autobuzul este la " + text[index][1];
+
+        let div = document.getElementById('updateDiv');
+        div.appendChild(up);
+
+        setTimeout(function() {up.style.opacity = '0'}, 30000);
+        setTimeout(function() {up.remove()}, 33000);
       }
-      else if(index > 0) {
-        if(text[index][0]-prev < 0) {
-          console.log("The bus is between " + text[index-1][1] + " and " + text[index][1]);
-          calculateRoute(prevPos, feature.geometry.coordinates)
-          console.log(prevPos);
+      else {
+        if(index == 0) {
+          let prev = text[index][0];
+          prevPos = feature.geometry.coordinates;
           console.log(feature.geometry.coordinates);
-          el.className = 'markerBetween';
+          
         }
+        else if(index > 0) {
+          if(text[index][0]-prev < 0) {
+            let up = document.createElement('div');
+            up.id = 'updates';
+            let div = document.getElementById('updateDiv');
+            div.appendChild(up);
+            setTimeout(function() {up.style.opacity = '0'}, 30000);
+            setTimeout(function() {up.remove()}, 33000);
+            up.textContent = "Autobuzul merge spre " + text[index][1] + " de la " + text[index-1][1];
+            console.log("The bus is between " + text[index-1][1] + " and " + text[index][1]);
+            //calculateRoute(prevPos, feature.geometry.coordinates)
+            console.log(prevPos);
+            console.log(feature.geometry.coordinates);
+            el.id = 'markerBetween';
+          }
+        }
+        
       }
       prev = text[index][0];
       
@@ -420,6 +504,19 @@ function updateMap() {
   
 }
 updateMap();
-setInterval(updateMap, 60000)
+setInterval(updateMap, 30000);
 
-    
+function Remove() {
+  const boxes = document.querySelectorAll('.marker');
+  const boxess = document.querySelectorAll('.markerBack');
+
+  boxes.forEach(box => {
+    box.remove();
+  });
+
+  boxess.forEach(boxx => {
+    boxx.remove();
+  });
+}
+
+setInterval(Remove, 60000);

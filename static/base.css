@@ -16,7 +16,7 @@ body {
 }
 
 body { margin: 0; padding: 0; }
-#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+#map { position: absolute; top: 0; bottom: 0; width: 100%; z-index = 1; }
 
 
 body {
@@ -48,8 +48,8 @@ body {
 }
 
 .markerBack {
-  background-color: #c0b4b4;
-  color: black;
+  background-color: #2704d2;
+  color: white;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -65,22 +65,12 @@ body {
   font-weight: bold;
 }
 
-.markerBetween {
-  background-color: #65ec7b;
-  color: black;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-content: center;
-  background-size: cover;
-  width: fit-content;
-  padding: 5px;
-  font-size: 12px;
-  height: fit-content;
-  border-radius: 16px;
-  cursor: pointer;
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-weight: bold;
+#markerBetween {
+  border: 5px solid #3dff5d;
+}
+
+#none {
+  border: none;
 }
 
 .mapboxgl-popup {
@@ -89,4 +79,25 @@ body {
 .mapboxgl-popup-content {
   text-align: center;
   color: blue;
+}
+
+#updateDiv {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 10;
+  background-color: black;
+  border-radius: 16px;
+  color: white;
+  font-size: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content = flex-start;
+  align-content = center;
+}
+
+#updates {
+  font-size: 20px;
+  padding: 5px;
+  transition: opacity 1s;
 }

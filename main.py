@@ -104,7 +104,7 @@ print ("starting...")
 import threading
 
 def printit():
-  threading.Timer(60.0, printit).start()
+  threading.Timer(30.0, printit).start()
   timetable.clear()
   quickTime.clear()
   quick.clear()
