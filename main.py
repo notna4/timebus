@@ -92,7 +92,7 @@ def computeTimeTables(quickTime, quick):
     quickTime = []
   
   #quick.sort()
-  print(quick)
+  #print(quick)
   
   #print(here/60)
   #print(hereMin)
@@ -104,8 +104,7 @@ print ("starting...")
 import threading
 
 def printit():
-  threading.Timer(5.0, printit).start()
-  print ("Hello, World!")
+  threading.Timer(60.0, printit).start()
   timetable.clear()
   quickTime.clear()
   quick.clear()
