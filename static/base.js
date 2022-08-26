@@ -320,18 +320,7 @@ const geojson = {
       'type': 'Feature',
       'geometry': {
         'type': 'Point',
-        'coordinates': [21.216711, 45.756569]
-      },
-      'properties': {
-        'title': 'Mapbox',
-        'description': 'Circumvalatiunii' 
-      } 
-    },
-    {
-      'type': 'Feature',
-      'geometry': {
-        'type': 'Point',
-        'coordinates': [21.223106, 45.756241]
+        'coordinates': [21.223105, 45.756244]
       },
       'properties': {
         'title': 'Mapbox',
@@ -344,10 +333,27 @@ const geojson = {
 const map = new mapboxgl.Map({
   container: 'map',
   style: 'mapbox://styles/mapbox/light-v10',
-  center: [21.22263, 45.75634],
+  center: [21.197625, 45.756189], //45.7567589,21.2011623,15.75z
   zoom: 15
 });
 
+function calculateRoute(geomFrom, geomTo) {
+
+  var lngFrom = geomFrom[0]
+  var latFrom = geomFrom[1]
+
+  var lngTo = geomTo[0]  
+  var latTo = geomTo[1]
+
+      $.get('https://api.mapbox.com/directions/v5/mapbox/driving/21.19449716216147%2C45.75670804646262%3B21.2026916969902%2C45.7574848591222?alternatives=true&geometries=polyline&language=en&overview=simplified&steps=true&access_token=pk.eyJ1IjoicnViaWM0IiwiYSI6ImNrY3Vla3R1ZjF0YnYyeXQ2c243eWVpeHEifQ.Hgj0BjhuuOAowR_pE97V_Q', 
+    function( data ) {
+      var coords = polyline.decode(data.routes[0].geometry);
+  
+      var line = L.polyline(coords).addTo(map);
+
+  });  
+};
+let prevPos;
 function updateMap() {
   
   const boxes = document.querySelectorAll('.marker');
@@ -362,32 +368,53 @@ function updateMap() {
   .then(function (response) {
         return response.json();
   }).then(function (text) {
-      // console.log('GET response text:');
-      //console.log(text);
+    // console.log('GET response text:');
+    //console.log(text);
 
-      for (const feature of geojson.features) {
-        // create a HTML element for each feature
-        const el = document.createElement('div');
-        
-        el.textContent = `${text[index][1]}: ${text[index][0]} min.`;
-        if(index > 16) {
-          el.className = 'markerBack';
-        }
-        else {
-          el.className = 'marker';
-        }
-        index++;
-        // make a marker for each feature and add it to the map
-        new mapboxgl.Marker(el)
-          .setLngLat(feature.geometry.coordinates)
-          .setPopup(
-            new mapboxgl.Popup({ offset: 25 }) // add popups
-              .setHTML(
-                `<h3>${feature.properties.title}</h3><p>${feature.properties.description}</p>`
-              )
-          )
-          .addTo(map);
+    
+    for (const feature of geojson.features) {
+      // create a HTML element for each feature
+      const el = document.createElement('div');
+
+      el.textContent = `${text[index][1]}: ${text[index][0]} min.`;
+
+      
+      if(index > 16) {
+        el.className = 'markerBack';
       }
+      else {
+        el.className = 'marker';
+      }
+      
+      if(index == 0) {
+        let prev = text[index][0];
+        prevPos = feature.geometry.coordinates;
+        console.log(feature.geometry.coordinates);
+      }
+      else if(index > 0) {
+        if(text[index][0]-prev < 0) {
+          console.log("The bus is between " + text[index-1][1] + " and " + text[index][1]);
+          calculateRoute(prevPos, feature.geometry.coordinates)
+          console.log(prevPos);
+          console.log(feature.geometry.coordinates);
+          el.className = 'markerBetween';
+        }
+      }
+      prev = text[index][0];
+      
+      index++;
+      // make a marker for each feature and add it to the map
+      new mapboxgl.Marker(el)
+        .setLngLat(feature.geometry.coordinates)
+        .setPopup(
+          new mapboxgl.Popup({ offset: 25 }) // add popups
+            .setHTML(
+              `<h3>${feature.properties.title}</h3><p>${feature.properties.description}</p>`
+            )
+        )
+        .addTo(map);
+    }
+    
     
   });
   
